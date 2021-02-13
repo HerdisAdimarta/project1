@@ -56,6 +56,7 @@ public class MainActivity extends Activity {
 
     // String for MAC address
     private static String address;
+    private static String rssi;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -73,7 +74,6 @@ public class MainActivity extends Activity {
         sensorView2 = (TextView) findViewById(R.id.sensorView2);
         sensorView3 = (TextView) findViewById(R.id.sensorView3);
         String device = BluetoothDevice.EXTRA_DEVICE;
-        sensorView3.setText(" RSSI = " + device);
 
         bluetoothIn = new Handler() {
             public void handleMessage(android.os.Message msg) {
@@ -154,6 +154,8 @@ public class MainActivity extends Activity {
 
         //Get the MAC address from the DeviceListActivty via EXTRA
         address = intent.getStringExtra(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
+        rssi = intent.getStringExtra(DeviceListActivity.EXTRA_DEVICE_RSSI);
+        sensorView3.setText(" RSSI = " + rssi);
 
         //create device and set the MAC address
         BluetoothDevice device = btAdapter.getRemoteDevice(address);

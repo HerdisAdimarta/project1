@@ -21,14 +21,15 @@ public class DeviceListActivity extends Activity {
     // Debugging for LOGCAT
     private static final String TAG = "DeviceListActivity";
     private static final boolean D = true;
-    
-  
+
+
     // declare button for launching website and textview for connection status
     Button tlbutton;
     TextView textView1;
-    
+
     // EXTRA string to send on to mainactivity
     public static String EXTRA_DEVICE_ADDRESS = "device_address";
+    public static String EXTRA_DEVICE_RSSI = "device_rssi";
 
     // Member fields
     private BluetoothAdapter mBtAdapter;
@@ -39,12 +40,12 @@ public class DeviceListActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.device_list);
     }
-    
+
     @Override
-    public void onResume() 
+    public void onResume()
     {
     	super.onResume();
-    	//*************** 
+    	//***************
     	checkBTState();
 
     	textView1 = (TextView) findViewById(R.id.connecting);
@@ -88,8 +89,10 @@ public class DeviceListActivity extends Activity {
 
             // Make an intent to start next activity while taking an extra which is the MAC address.
 			Intent i = new Intent(DeviceListActivity.this, MainActivity.class);
+            String rssi = Integer.toString(i.getShortExtra(BluetoothDevice.EXTRA_RSSI, Short.MIN_VALUE));
             i.putExtra(EXTRA_DEVICE_ADDRESS, address);
-			startActivity(i);   
+            i.putExtra(EXTRA_DEVICE_RSSI, rssi);
+			startActivity(i);
         }
     };
 
