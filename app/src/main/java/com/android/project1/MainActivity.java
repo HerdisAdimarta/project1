@@ -86,7 +86,7 @@ public class MainActivity extends Activity {
         txtStringLength = (TextView) findViewById(R.id.testView1);
         sensorView0 = (TextView) findViewById(R.id.sensorView0);
         sensorView1 = (TextView) findViewById(R.id.sensorView1);
-        sensorView2 = (TextView) findViewById(R.id.btnRSSI);
+        sensorView2 = (TextView) findViewById(R.id.sensorView2);
         sensorView3 = (TextView) findViewById(R.id.sensorView3);
         String device = BluetoothDevice.EXTRA_DEVICE;
 

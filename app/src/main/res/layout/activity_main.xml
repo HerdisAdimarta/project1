@@ -50,21 +50,20 @@
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
-        android:id="@+id/sensorView3"
+        android:id="@+id/sensorView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/sensorView1"
         android:layout_centerHorizontal="true"
-        android:text="Sensor 3 Voltage = ????"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <Button
-        android:id="@+id/btnRSSI"
+    <TextView
+        android:id="@+id/sensorView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/sensorView3"
+        android:layout_below="@+id/sensorView2"
         android:layout_centerHorizontal="true"
-        android:text="Get RSSI"
+        android:text="Sensor 3 Voltage = ????"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
