@@ -53,8 +53,8 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
-    Button btnOn, btnOff;
-    TextView txtArduino, txtString, txtStringLength, sensorView0, sensorView1, sensorView2, sensorView3;
+    Button btnOn;
+    TextView sensorView3;
     Handler bluetoothIn;
 
     final int handlerState = 0;        				 //used to identify handler message
@@ -81,12 +81,6 @@ public class MainActivity extends Activity {
 
         //Link the buttons and textViews to respective views
         btnOn = (Button) findViewById(R.id.buttonOn);
-        btnOff = (Button) findViewById(R.id.buttonOff);
-        txtString = (TextView) findViewById(R.id.txtString);
-        txtStringLength = (TextView) findViewById(R.id.testView1);
-        sensorView0 = (TextView) findViewById(R.id.sensorView0);
-        sensorView1 = (TextView) findViewById(R.id.sensorView1);
-        sensorView2 = (TextView) findViewById(R.id.sensorView2);
         sensorView3 = (TextView) findViewById(R.id.sensorView3);
         String device = BluetoothDevice.EXTRA_DEVICE;
 
@@ -101,22 +95,7 @@ public class MainActivity extends Activity {
                     int endOfLineIndex = recDataString.indexOf("~");                    // determine the end-of-line
                     if (endOfLineIndex > 0) {                                           // make sure there data before ~
                         String dataInPrint = recDataString.substring(0, endOfLineIndex);    // extract string
-                        txtString.setText("Data Received = " + dataInPrint);
                         int dataLength = dataInPrint.length();							//get length of data received
-                        txtStringLength.setText("String Length = " + String.valueOf(dataLength));
-
-                        if (recDataString.charAt(0) == '#')								//if it starts with # we know it is what we are looking for
-                        {
-                            String sensor0 = recDataString.substring(1, 5);             //get sensor value from string between indices 1-5
-                            String sensor1 = recDataString.substring(6, 10);            //same again...
-                            String sensor2 = recDataString.substring(11, 15);
-                            String sensor3 = recDataString.substring(16, 20);
-
-                            sensorView0.setText(" Sensor 0 Voltage = " + sensor0 + "V");	//update the textviews with sensor values
-                            sensorView1.setText(" Sensor 1 Voltage = " + sensor1 + "V");
-                            sensorView2.setText(" Sensor 2 Voltage = " + sensor2 + "V");
-//                            sensorView3.setText(" Sensor 3 Voltage = " + sensor3 + "V");
-                        }
                         recDataString.delete(0, recDataString.length()); 					//clear all string data
                         // strIncom =" ";
                         dataInPrint = " ";
@@ -127,15 +106,6 @@ public class MainActivity extends Activity {
 
         btAdapter = BluetoothAdapter.getDefaultAdapter();       // get Bluetooth adapter
         checkBTState();
-
-
-        // Set up onClick listeners for buttons to send 1 or 0 to turn on/off LED
-        btnOff.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-                mConnectedThread.write("B");    // Send "0" via Bluetooth
-                Toast.makeText(getBaseContext(), "Turn off LED", Toast.LENGTH_SHORT).show();
-            }
-        });
 
         btnOn.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
