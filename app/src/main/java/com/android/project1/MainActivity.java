@@ -287,7 +287,8 @@ public class MainActivity extends Activity {
     public void getStrength(Context context) {
 
         String ssid = null, bssid, output,fileop;
-        int rssi, speed,freq;
+        int rssi, speed, distance, freq;
+        double distance2;
 
         ConnectivityManager connManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
@@ -298,9 +299,12 @@ public class MainActivity extends Activity {
                 rssi = connectionInfo.getRssi();
                 ssid = connectionInfo.getSSID();
                 bssid = connectionInfo.getBSSID();
-                speed = connectionInfo.getLinkSpeed();
                 freq = connectionInfo.getFrequency();
-                output = new String("Jarak Kendaraan : \n" + rssi + " dBm");
+                speed = connectionInfo.getLinkSpeed();
+                distance2 = (24 - (20*Math.log10(2442))+Math.abs(rssi));
+                distance = 10 ^ ((-69 - (rssi))/(10 * 2));
+//                output = new String("Jarak Kendaraan : \n" + String.format("%.3f",distance2) + " meter\n" +rssi);
+                output = new String("Jarak Kendaraan : \n" + String.format("%.3f",distance2) + " meter\n");
                 TextView textView = findViewById(R.id.sensorView3);
                 textView.setText(output);
                 File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "WifiAnalyzer");
