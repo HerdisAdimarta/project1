@@ -300,7 +300,7 @@ public class MainActivity extends Activity {
                 bssid = connectionInfo.getBSSID();
                 speed = connectionInfo.getLinkSpeed();
                 freq = connectionInfo.getFrequency();
-                output = new String("RSSI: " + rssi + " dBm\nSSID: " + ssid + "\nBSSID: " + bssid + "\nLink Speed: " + speed + " Mbps"+"\nFrequency: "+freq+" MHz");
+                output = new String("Jarak Kendaraan : \n" + rssi + " dBm");
                 TextView textView = findViewById(R.id.sensorView3);
                 textView.setText(output);
                 File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "WifiAnalyzer");
