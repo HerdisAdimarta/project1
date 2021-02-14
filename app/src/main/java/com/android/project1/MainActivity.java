@@ -1,5 +1,6 @@
 package com.android.project1;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
@@ -9,16 +10,28 @@ import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.UUID;
 
 import java.io.IOException;
@@ -57,7 +70,9 @@ public class MainActivity extends Activity {
     // String for MAC address
     private static String address;
     private static String rssi;
+    private static String rssi_wifi;
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,9 +86,12 @@ public class MainActivity extends Activity {
         txtStringLength = (TextView) findViewById(R.id.testView1);
         sensorView0 = (TextView) findViewById(R.id.sensorView0);
         sensorView1 = (TextView) findViewById(R.id.sensorView1);
-        sensorView2 = (TextView) findViewById(R.id.sensorView2);
+        sensorView2 = (TextView) findViewById(R.id.btnRSSI);
         sensorView3 = (TextView) findViewById(R.id.sensorView3);
         String device = BluetoothDevice.EXTRA_DEVICE;
+
+        Context c = getApplicationContext();
+        getStrength(c);
 
         bluetoothIn = new Handler() {
             public void handleMessage(android.os.Message msg) {
@@ -155,7 +173,8 @@ public class MainActivity extends Activity {
         //Get the MAC address from the DeviceListActivty via EXTRA
         address = intent.getStringExtra(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
         rssi = intent.getStringExtra(DeviceListActivity.EXTRA_DEVICE_RSSI);
-        sensorView3.setText(" RSSI = " + rssi);
+//        rssi_wifi = intent.getStringExtra(DeviceListActivity.EXTRA_DEVICE_RSSI_WIFI);
+//        sensorView3.setText("Jarak Kendaraan\n" + rssi);
 
         //create device and set the MAC address
         BluetoothDevice device = btAdapter.getRemoteDevice(address);
@@ -263,5 +282,58 @@ public class MainActivity extends Activity {
             }
         }
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public void getStrength(Context context) {
+
+        String ssid = null, bssid, output,fileop;
+        int rssi, speed,freq;
+
+        ConnectivityManager connManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        if (networkInfo.isConnected()) {
+            final WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+            final WifiInfo connectionInfo = wifiManager.getConnectionInfo();
+            if (connectionInfo != null) {
+                rssi = connectionInfo.getRssi();
+                ssid = connectionInfo.getSSID();
+                bssid = connectionInfo.getBSSID();
+                speed = connectionInfo.getLinkSpeed();
+                freq = connectionInfo.getFrequency();
+                output = new String("RSSI: " + rssi + " dBm\nSSID: " + ssid + "\nBSSID: " + bssid + "\nLink Speed: " + speed + " Mbps"+"\nFrequency: "+freq+" MHz");
+                TextView textView = findViewById(R.id.sensorView3);
+                textView.setText(output);
+                File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "WifiAnalyzer");
+                dir.mkdirs();
+                try {
+                    Date currentTime = Calendar.getInstance().getTime();
+                    SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
+                    String formattedDate = df.format(currentTime);
+                    File myFile = new File(dir, "Log.txt");
+                    if (myFile.length() < 1024000) {
+                        FileWriter fw = new FileWriter(myFile, true);
+                        BufferedWriter bw = new BufferedWriter(fw);
+                        PrintWriter pw = new PrintWriter(bw);
+                        String printString = formattedDate + "\t" + ssid + "\t" + rssi+" dBm\t"+speed+" Mbps\n";
+                        pw.print(printString);
+                        pw.close();
+                    }else{
+                        PrintWriter pw = new PrintWriter(myFile);
+                        pw.print("");
+                        pw.close();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+        else {
+            output = "Please connect your device.";
+            TextView textView = findViewById(R.id.sensorView3);
+            textView.setText(output);
+        }
+    }
+
 }
 
